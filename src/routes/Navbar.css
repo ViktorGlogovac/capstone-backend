@@ -1,0 +1,6 @@
+.navbarContainer{
+    background-color: var(--navbar-background);
+    height: 100vh;
+    width: 10vw;
+    padding: 1rem;
+}
