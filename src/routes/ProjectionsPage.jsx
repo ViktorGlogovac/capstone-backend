@@ -8,6 +8,14 @@ function ProjectionsPage() {
         Projections
       </div>
       <div className="line"></div>
+      <div className="filter_container">
+          <div className="filter"></div>
+          <div className="filter"></div>
+        </div>
+        
+      <div className="company_area">
+       
+      </div>
     </div>
   );
 }

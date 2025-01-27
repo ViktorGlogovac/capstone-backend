@@ -1,17 +1,46 @@
 .projections-page-title{
     font-weight: 700;
     font-size: 2rem;
-    padding-left: 2rem;
-    padding-top: 1.5rem;
+    padding-left: 1rem;
+    padding-top: 1rem;
 }
 
 .line {
     width: 100%; /* Makes the line span the full width */
     height: 2px; /* Line thickness */
     background-color: black; /* Line color */
-    margin: 0 auto; /* Centers the line horizontally */
+    margin: 0.5rem auto; /* Centers the line horizontally */
 }
 
 .projections_content_area{
-    width: 80%;
+    width: 83VW;
+}
+
+.company_area {
+    background-color: red;
+    width: 80vw; /* Corrected VW to vw */
+    height: 85vh; /* Corrected VH to vh */
+    margin: 1rem;
+    flex-direction: row;
+    overflow: scroll;
+    scrollbar-width: none; /* Hides scrollbar for Firefox */
+}
+
+.company_area::-webkit-scrollbar {
+    display: none; /* Hides scrollbar for Chrome, Safari, and Edge */
+}
+
+.filter_container{
+    display: flex;
+    flex-direction: row;
+    height: 5rem;
+    width: 20rem;
+    background-color: violet;
+}
+
+.filter{
+    height: 3rem;
+    width: 1rem;
+    margin: 1rem;
+    background-color: black;
 }

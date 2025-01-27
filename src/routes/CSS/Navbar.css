@@ -1,7 +1,7 @@
 .navbarContainer{
     background-color: var(--navbar-background);
     height: 100vh;
-    width: 17%;
+    width: 17VW;
     font-size: 1.7rem;
     font-weight: 700;
 }
