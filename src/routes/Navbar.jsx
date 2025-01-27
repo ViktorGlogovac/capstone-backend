@@ -1,12 +1,26 @@
-import React from 'react'
-import "./Navbar.css"
+import React from 'react';
+import { Link } from 'react-router-dom';
+import "./CSS/Navbar.css";
+import { AiOutlineFundProjectionScreen } from "react-icons/ai";
+import { IoDocumentText } from "react-icons/io5";
 
-function navbar() {
+function Navbar() {
   return (
     <div className='navbarContainer'>
-      <h1>Scoop</h1>
+      <div className="nameContainer">
+        <div className="navbarTitle">SkyWatch</div>
+      </div>
+
+      <div className="Projection-Container-Nav">
+      <AiOutlineFundProjectionScreen className='projection-icon'/>
+        <Link to="/Projections" className='navLink'>Projections</Link>
+      </div>
+      <div className="Documentation-Container-Nav">
+      <IoDocumentText className='projection-icon'/>
+        <Link to="/documentation" className="navLink">Documentation</Link>
+      </div>
     </div>
-  )
+  );
 }
 
-export default navbar
+export default Navbar;

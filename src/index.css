@@ -6,6 +6,7 @@ body {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   --navbar-background: rgb(40,66,85);
+  --navbar-title-background: rgb(26, 126, 197);
 }
 
 code {

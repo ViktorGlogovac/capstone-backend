@@ -1,9 +1,15 @@
-import React from 'react'
+import React from 'react';
+import "./CSS/ProjectionsPage.css";
 
-function projectionsPage() {
+function ProjectionsPage() {
   return (
-    <div>projectionsPage</div>
-  )
+    <div className="projections_content_area">
+      <div className="projections-page-title">
+        Projections
+      </div>
+      <div className="line"></div>
+    </div>
+  );
 }
 
-export default projectionsPage
+export default ProjectionsPage;

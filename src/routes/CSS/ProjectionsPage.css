@@ -1,0 +1,17 @@
+.projections-page-title{
+    font-weight: 700;
+    font-size: 2rem;
+    padding-left: 2rem;
+    padding-top: 1.5rem;
+}
+
+.line {
+    width: 100%; /* Makes the line span the full width */
+    height: 2px; /* Line thickness */
+    background-color: black; /* Line color */
+    margin: 0 auto; /* Centers the line horizontally */
+}
+
+.projections_content_area{
+    width: 80%;
+}

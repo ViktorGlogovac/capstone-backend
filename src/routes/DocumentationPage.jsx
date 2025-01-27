@@ -1,8 +1,11 @@
 import React from 'react'
+import "./CSS/DocumentationPage.css"
 
 function documentationPage() {
   return (
-    <div>documentationPage</div>
+    <div className="Documentation-page-title">
+        Documentation
+      </div>
   )
 }
 
