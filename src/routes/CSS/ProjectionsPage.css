@@ -149,15 +149,31 @@
     justify-content: space-between; /* Pushes the `dash` to the right */
 }
 
-.dash {
-    color: white;
+.icon {
     margin-left: auto; /* Moves the dash to the right */
     text-align: right; /* Aligns the dash content to the right */
     margin-right: 4rem;
 }
 
-.icon {
-    font-size: 2rem; /* Makes the icon larger */
-    font-weight: bold; /* Makes the icon appear bolder (if supported) */
-    color: white; /* Optional: Change the color of the icon */
+.dash_line {
+    width: 20px; /* Makes the line span the full width */
+    height: 5px; /* Line thickness */
+    background-color: black; /* Line color */
+    margin: 0.5rem; /* Centers the line horizontally */
+}
+
+
+.accuracy_amount{
+    color: black;
+    font-weight: 700;
+}
+
+.icon_up_arrow {
+    margin-left: auto; /* Moves the dash to the right */
+    text-align: right; /* Aligns the dash content to the right */
+    margin-right: 5rem;
+}
+
+.up_arrow{
+    size: 50px;
 }

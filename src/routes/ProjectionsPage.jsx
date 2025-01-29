@@ -1,6 +1,6 @@
 import React from 'react';
 import "./CSS/ProjectionsPage.css";
-import { VscDash } from "react-icons/vsc";
+import { FaArrowAltCircleUp } from "react-icons/fa";
 
 function ProjectionsPage() {
   return (
@@ -33,16 +33,47 @@ function ProjectionsPage() {
           <div className="company_header">Company Name</div>
           <div className="status_box">
             <div className="scoop_status">Scoop Trend:</div>
-            <div className="dash">
-              <VscDash className="icon" />
+            <div className="icon">
+              <div className="dash_line"></div>
             </div>
           </div>
           <div className="status_box">
             <div className="accuracy_status">Accuracy:</div>
+            <div className="icon">
+              <div className="accuracy_amount">85%</div>
+            </div>
           </div>
         </div>
-        <div className="company_box"></div>
-        <div className="company_box"></div>
+        <div className="company_box">
+          <div className="company_header">Company Name</div>
+          <div className="status_box">
+            <div className="scoop_status">Scoop Trend:</div>
+            <div className="icon_up_arrow">
+              <FaArrowAltCircleUp className='up_arrow'/>
+            </div>
+          </div>
+          <div className="status_box">
+            <div className="accuracy_status">Accuracy:</div>
+            <div className="icon">
+              <div className="accuracy_amount">77%</div>
+            </div>
+          </div>
+        </div>
+        <div className="company_box">
+          <div className="company_header">Company Name</div>
+          <div className="status_box">
+            <div className="scoop_status">Scoop Trend:</div>
+            <div className="icon">
+              <div className="dash_line"></div>
+            </div>
+          </div>
+          <div className="status_box">
+            <div className="accuracy_status">Accuracy:</div>
+            <div className="icon">
+              <div className="accuracy_amount">95%</div>
+            </div>
+          </div>
+        </div>
         <div className="company_box"></div>
       </div>
     </div>
