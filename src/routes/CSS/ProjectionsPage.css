@@ -16,76 +16,6 @@
     width: 83VW;
 }
 
-
-.filter_container {
-    display: flex;
-    flex-wrap: wrap; /* Allows the children to wrap to the next line if needed */
-    flex-direction: row; /* Ensures horizontal alignment */
-    width: auto; /* Adjusts the width dynamically based on content */
-    max-width: 80vw; /* Prevents the container from exceeding the specified width */
-    min-height: 10vh; /* Ensures a minimum height */
-    border-radius: 1rem;
-    background-color: var(--navbar-background);
-    margin: 1rem;
-    box-sizing: border-box; /* Includes padding in width/height calculations */
-    
-}
-
-.filter {
-    display: flex;
-    flex-direction: row;
-    flex-wrap: wrap;
-    justify-content: center;
-    min-height: 9vh;
-    width: 15vw; /* Corrected 'VW' to 'vw' */
-    margin-left: 1.5rem;
-    margin-top: 1rem;
-    margin-bottom: 1rem;
-    margin-right: 1.5rem;
-    border-radius: 0.5rem; /* Rounds the corners slightly */
-    background-color: white; /* Optional: Makes the background stand out */
-}
-
-.filter2 {   
-    display: flex;
-    flex-direction: row;
-    flex-wrap: wrap;
-    justify-content: center;
-    min-height: 9vh;
-    width: 15vw; /* Corrected 'VW' to 'vw' */
-    border-radius: 0.5rem; /* Rounds the corners slightly */
-    margin-left: 4rem;
-    margin-top: 1rem;
-    margin-bottom: 1rem;
-    margin-right: 1.5rem;
-    background-color: white; /* Optional: Makes the background stand out */
-}
-
-.filter_header{
-    font-weight: 600;
-    font-size: 1.3rem;
-    color: rgb(40, 38, 38);
-    text-align: center; 
-    text-decoration: underline;
-}
-
-.search-bar-container{
-    width: 95%;
-    height: 45%;
-    border-radius: 0.5rem;
-    margin-top: 0.1rem;
-    margin-right: 1rem;
-    margin-left: 1rem;
-    margin-bottom: 0.1rem;
-    background-color: #f6f3f3;
-    display: flex;
-    align-items: center;
-    font-size: 1rem;
-    color: rgb(40, 38, 38);
-    text-align: center; 
-    padding-left: 0.5rem;
-}
-
 .company_area {
     width: 80vw;
     height: 65vh;
@@ -171,9 +101,13 @@
 .icon_up_arrow {
     margin-left: auto; /* Moves the dash to the right */
     text-align: right; /* Aligns the dash content to the right */
-    margin-right: 5rem;
+    margin-right: 4.5rem;
 }
 
 .up_arrow{
-    size: 50px;
+    
+}
+
+.down_arrow{
+
 }
