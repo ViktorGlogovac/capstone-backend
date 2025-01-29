@@ -79,6 +79,17 @@
     justify-content: space-between; /* Pushes the `dash` to the right */
 }
 
+.status_box2 {
+    margin-bottom: 1rem;
+    margin-left: 1rem;
+    flex-wrap: nowrap; /* Ensures the content stays on one line */
+    flex-direction: row; /* Keeps items aligned horizontally */
+    display: flex; /* Enables flexbox layout */
+    align-items: center; /* Vertically aligns items */
+    justify-content: space-between; /* Pushes the `dash` to the right */
+}
+
+
 .icon {
     margin-left: auto; /* Moves the dash to the right */
     text-align: right; /* Aligns the dash content to the right */
@@ -104,10 +115,15 @@
     margin-right: 4.5rem;
 }
 
+
+.company_link{
+    text-decoration: none;
+}
+
 .up_arrow{
-    
+    color: rgb(11, 240, 11);
 }
 
 .down_arrow{
-
+    color: red;
 }

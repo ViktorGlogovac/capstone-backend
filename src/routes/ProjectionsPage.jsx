@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import "./CSS/ProjectionsPage.css";
 import "./CSS/Filter.css";
+import "../App.css"
 import { StagnantCompanyBox, UpTrendCompanyBox, DownTrendCompanyBox } from "./CompanyBoxes";
 
 const dummyData = [
@@ -30,7 +31,7 @@ function ProjectionsPage() {
 
   return (
     <div className="projections_content_area">
-      <div className="projections-page-title">Projections</div>
+      <div className="page-title">Projections</div>
       <div className="line"></div>
 
       {/* Filter Container */}
@@ -43,7 +44,7 @@ function ProjectionsPage() {
               type="text"
               value={searchName}
               onChange={(e) => setSearchName(e.target.value)}
-              className="dropdown search-input"
+              className="dropdown_search_input"
               placeholder="Search by name..."
             />
           </div>
@@ -74,7 +75,7 @@ function ProjectionsPage() {
               type="text"
               value={searchCountry}
               onChange={(e) => setSearchCountry(e.target.value)}
-              className="dropdown search-input"
+              className="dropdown_search_input"
               placeholder="Search by country..."
             />
           </div>
@@ -88,7 +89,7 @@ function ProjectionsPage() {
               type="text"
               value={searchAccuracy}
               onChange={(e) => setSearchAccuracy(e.target.value)}
-              className="dropdown search-input"
+              className="dropdown_search_input"
               placeholder="Enter accuracy..."
             />
           </div>

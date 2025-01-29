@@ -45,7 +45,19 @@
 }
 
 /* Style for text inputs and dropdowns */
-.search-input, .dropdown {
+.dropdown_search_input{
+    width: 100%;
+    height: 1.5rem;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    padding: 0.25rem;
+    font-size: 1rem;
+    color: #333;
+    background-color: white;
+    text-align: left;
+}
+
+.dropdown {
     width: 100%;
     height: 2rem;
     border: 1px solid #ccc;
@@ -56,6 +68,7 @@
     background-color: white;
     text-align: left;
 }
+
 
 /* Focus effect */
 .search-input:focus, .dropdown:focus {
