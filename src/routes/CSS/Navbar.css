@@ -1,47 +1,47 @@
-.navbarContainer{
+.navbarContainer {
     background-color: var(--navbar-background);
     height: 100vh;
-    width: 17VW;
+    width: 17vw;
     font-size: 1.7rem;
     font-weight: 700;
 }
 
-.nameContainer{
+.nameContainer {
     height: 9vh;
-    background-color: var( --navbar-title-background);
+    background-color: var(--navbar-title-background);
     width: 100%;
 }
 
-.navbarTitle{
+.navbarTitle {
     color: white;
     padding-left: 1rem;
     padding-top: 1rem;
     width: 100%;
-    
 }
 
-.Projection-Container-Nav{
+.Projection-Container-Nav, 
+.Documentation-Container-Nav {
     padding: 1rem;
     display: flex;
-    justify-content: left; /* Horizontally center */
-    align-items: center; 
+    justify-content: left;
+    align-items: center;
+    transition: background-color 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
 }
 
-.Documentation-Container-Nav{
-    padding: 1rem;
-    display: flex;
-    justify-content: left; /* Horizontally center */
-    align-items: center; 
+/* Glow Effect for Active Tab */
+.active-tab {
+    background-color: rgba(255, 255, 255, 0.2);
+    border-radius: 0.5rem;
 }
 
-.navLink{
+.navLink {
     text-decoration: none;
     color: white;
     font-size: 1.3rem;
     font-weight: 200;
 }
 
-.projection-icon{
+.projection-icon {
     color: white;
     padding-right: 1rem;
 }

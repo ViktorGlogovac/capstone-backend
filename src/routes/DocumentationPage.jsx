@@ -3,7 +3,7 @@ import "./CSS/DocumentationPage.css"
 
 function documentationPage() {
   return (
-    <div className="Documentation-page-title">
+    <div className="page-title">
         Documentation
       </div>
   )

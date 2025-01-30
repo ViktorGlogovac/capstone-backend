@@ -69,3 +69,42 @@
     width: 100% !important;
     height: 100% !important;
 }
+
+.scoop_table_container {
+    margin-top: 2rem;
+    width: 60vw;
+    margin-left: 1rem;
+    margin-right: 2rem;
+    overflow-x: auto;
+}
+
+.table_header {
+    font-weight: 700;
+    font-size: 1.5rem;
+    text-decoration: underline;
+    margin-bottom: 1rem;
+}
+
+.scoop_table {
+    width: 100%;
+    border-collapse: collapse;
+    text-align: center;
+}
+
+.scoop_table th, .scoop_table td {
+    border: 1px solid #ccc;
+    padding: 0.75rem;
+}
+
+.scoop_table th {
+    background-color: #f4f4f4;
+    font-weight: 600;
+}
+
+.scoop_table td {
+    font-size: 1rem;
+}
+
+.scoop_table tr:nth-child(even) {
+    background-color: #fafafa;
+}
