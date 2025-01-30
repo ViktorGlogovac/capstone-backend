@@ -5,8 +5,9 @@ body {
     sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  --navbar-background: rgb(40,66,85);
-  --navbar-title-background: rgb(26, 126, 197);
+  --navbar-background: #284255;
+  --navbar-title-background: #1A7EF6;
+  --graph-filter-background: #ebeef2;
 }
 
 code {

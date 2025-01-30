@@ -1,3 +1,47 @@
 .company_content_area{
     width: 83VW;
 }
+
+.all_graph_filter_container{
+    min-height: 13Vh;
+    width: 40VW;
+    margin: 1rem;
+}
+
+.graph_header{
+    font-weight: 700;
+    font-size: 1.5rem;
+    color: black;
+    text-decoration: underline;
+    margin-left: 2rem;
+}
+
+.specifc_graph_filter_container{
+    display: flex;
+    flex-wrap: nowrap; /* Keeps all filters in one line */
+    flex-direction: row;
+    width: 40vw;
+    min-height: 7vh;
+    margin-left: 1rem;
+}
+
+.graph_filter {
+    width: 8vw;
+    height: 6vh;
+    background-color: var(--graph-filter-background);
+    margin-left: 1rem;
+    border-radius: 0.5rem;
+    margin-top: 0.5rem;
+    
+    /* Center the text inside */
+    display: flex;
+    justify-content: center; /* Horizontally centers content */
+    align-items: center; /* Vertically centers content */
+}
+
+
+.filter_text{
+    font-weight: 500;
+    font-size: 1rem;
+    color: black;
+}
