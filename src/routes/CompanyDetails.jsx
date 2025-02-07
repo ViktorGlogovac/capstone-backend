@@ -20,14 +20,13 @@ function CompanyDetails() {
   const { companyName } = useParams();
   const decodedCompanyName = decodeURIComponent(companyName);
   const location = useLocation();
-  // If we navigated here from another page, "company" might be in location.state.
+  // If navigated from another page, company data might already be in location.state.
   const company = location.state?.company;
 
   const [selectedGraphType, setSelectedGraphType] = useState("YTD");
   const [companyData, setCompanyData] = useState(company);
 
-  // 1. On initial mount, if we have no company data (e.g. user refreshed the page),
-  //    fetch all CSV data and parse it to find the matching company rows.
+  // On mount, if we don’t already have company data, fetch and parse CSV.
   useEffect(() => {
     if (!companyData) {
       fetch("http://localhost:3001/api/all_companies_forecasts")
@@ -38,8 +37,7 @@ function CompanyDetails() {
             skipEmptyLines: true,
             complete: (results) => {
               const data = results.data;
-
-              // Group data by company_id
+              // Group rows by company_id
               const grouped = {};
               data.forEach((row) => {
                 if (!row.company_id) return;
@@ -48,8 +46,7 @@ function CompanyDetails() {
                 }
                 grouped[row.company_id].push(row);
               });
-
-              // Find the matching company by name
+              // Find the matching company by company_id (decodedCompanyName)
               const matchedCompany = Object.values(grouped).find(
                 (rows) => rows[0]?.company_id === decodedCompanyName
               );
@@ -57,8 +54,14 @@ function CompanyDetails() {
               if (matchedCompany) {
                 setCompanyData({
                   name: decodedCompanyName,
-                  scoopCounts: matchedCompany.map((row) => parseFloat(row.scoop_count) || 0),
-                  predictedCounts: matchedCompany.map((row) => parseFloat(row.predicted_scoop_count) || 0),
+                  // Use actual scoop_count if available (or null if predicted row)
+                  scoopCounts: matchedCompany.map((row) =>
+                    row.scoop_count !== "" ? parseFloat(row.scoop_count) : null
+                  ),
+                  // For predicted, if a value is provided then parse it; otherwise, null.
+                  predictedCounts: matchedCompany.map((row) =>
+                    row.predicted_scoop_count !== "" ? parseFloat(row.predicted_scoop_count) : null
+                  ),
                   dates: matchedCompany.map((row) => row.date),
                 });
               }
@@ -70,108 +73,106 @@ function CompanyDetails() {
   }, [companyData, decodedCompanyName]);
 
   /**
-   * This function filters out the last 28 days based on the
-   * data's own *latest date*, then treats the final 4 entries
-   * within that 28-day window as “predicted,” and the earlier
-   * ones as “actual.”
+   * filterData() returns arrays for actualCounts, predictedCounts, and labels (dates)
+   * based on the selected graph type.
+   *
+   * Graph type options:
+   * - "YTD": Last year’s actual data (from one year before the last actual date) plus any predicted dates.
+   * - "Month": Last 3 weeks (21 days) of actual data plus the predicted week.
+   * - "Max": All actual data plus the predicted week.
+   *
+   * We determine the "last actual date" as the latest date where a predicted value is not provided.
    */
-  const filterLastMonthData = () => {
+  const filterData = (graphType) => {
     if (!companyData) {
       return { actualCounts: [], predictedCounts: [], filteredDates: [] };
     }
 
-    // Convert each date-string to a Date object
-    const dateObjects = companyData.dates.map((d) => new Date(d));
+    // Convert date strings to Date objects.
+    const dates = companyData.dates.map((d) => new Date(d));
 
-    // Find the LATEST date in the entire dataset
-    const maxDateValue = Math.max(...dateObjects);
-    const maxDate = new Date(maxDateValue);
-
-    // Start date: 28 days before maxDate
-    const startDate = new Date(maxDate.getTime() - 28 * 24 * 60 * 60 * 1000);
-
-    // Collect rows that are between [startDate, maxDate]
-    let filteredRows = [];
-    companyData.dates.forEach((dateStr, i) => {
-      const dateObj = new Date(dateStr);
-      if (dateObj >= startDate && dateObj <= maxDate) {
-        filteredRows.push({
-          date: dateObj,
-          actual: companyData.scoopCounts[i],
-          predicted: companyData.predictedCounts[i],
-        });
+    // Determine the last actual date (the most-recent row where predictedCounts is null).
+    let lastActualDate = null;
+    dates.forEach((d, i) => {
+      if (companyData.predictedCounts[i] === null) {
+        lastActualDate = d;
       }
     });
+    if (!lastActualDate) {
+      lastActualDate = dates[dates.length - 1];
+    }
 
-    // Sort those rows in ascending date order
-    filteredRows.sort((a, b) => a.date - b.date);
-
-    // Last 4 entries become predicted
-    const totalCount = filteredRows.length;
-    const predictedStartIndex = Math.max(0, totalCount - 4); // or change to -7 for 7 predicted days
+    // Determine the window start date based on the graph type.
+    let windowStartDate;
+    if (graphType === "YTD") {
+      windowStartDate = new Date(lastActualDate);
+      windowStartDate.setFullYear(windowStartDate.getFullYear() - 1);
+    } else if (graphType === "Month") {
+      windowStartDate = new Date(lastActualDate.getTime() - 21 * 24 * 60 * 60 * 1000);
+    } else if (graphType === "Max") {
+      windowStartDate = new Date(-8640000000000000); // effectively the earliest date possible
+    } else {
+      windowStartDate = new Date(-8640000000000000);
+    }
 
     const filteredDates = [];
     const actualCounts = [];
     const predictedCounts = [];
 
-    filteredRows.forEach((row, idx) => {
-      // Format date as e.g. 2021-08-01
-      const dateString = row.date.toISOString().split("T")[0];
-      filteredDates.push(dateString);
-
-      if (idx < predictedStartIndex) {
-        // These are "actual"
-        actualCounts.push(row.actual);
-        predictedCounts.push(null);
-      } else {
-        // These last 4 are "predicted"
-        actualCounts.push(null);
-        predictedCounts.push(row.predicted);
+    // Loop over every row in companyData.
+    for (let i = 0; i < dates.length; i++) {
+      const d = dates[i];
+      if (d >= windowStartDate) {
+        filteredDates.push(d.toISOString().split("T")[0]);
+        if (d <= lastActualDate) {
+          // This row is from actual data.
+          actualCounts.push(companyData.scoopCounts[i]);
+          predictedCounts.push(null);
+        } else {
+          // This row is predicted.
+          actualCounts.push(null);
+          predictedCounts.push(companyData.predictedCounts[i]);
+        }
       }
-    });
+    }
 
     return { actualCounts, predictedCounts, filteredDates };
   };
 
-  // Default data is from the entire dataset:
-  let filteredDates = companyData?.dates || [];
-  let actualCounts = companyData?.scoopCounts || [];
-  let predictedCounts = [];
+  // Get filtered data arrays.
+  const { actualCounts, predictedCounts, filteredDates } = filterData(selectedGraphType);
+  // Create a continuous (combined) data array:
+  const combinedCounts = filteredDates.map((_, i) => {
+    return actualCounts[i] !== null ? actualCounts[i] : predictedCounts[i];
+  });
+  // Determine the first index where predicted data begins.
+  const firstPredictedIndex = filteredDates.findIndex((_, i) => actualCounts[i] === null);
 
-  // Decide how to slice the data based on selectedGraphType
-  if (companyData) {
-    if (selectedGraphType === "Month") {
-      const { actualCounts: a, predictedCounts: p, filteredDates: d } = filterLastMonthData();
-      actualCounts = a;
-      predictedCounts = p;
-      filteredDates = d;
-    } else if (selectedGraphType === "YTD") {
-      // You might apply a different filter: e.g. from Jan 1 of the current year
-      // or from the first date of the dataset in the current year.
-      // For simplicity, we’ll just leave the entire dataset for now.
-    } else if (selectedGraphType === "Max") {
-      // "Max" = entire dataset, so no filtering.
-    }
-  }
-
-  // Build the Chart.js data object
+  // Build the Chart.js data object using a single dataset.
   const chartData = {
     labels: filteredDates,
     datasets: [
       {
-        label: "Actual Scoop Count",
-        data: actualCounts,
+        label: "Scoop Count",
+        data: combinedCounts,
         fill: false,
         borderColor: "blue",
         tension: 0.4,
-      },
-      {
-        label: "Predicted Scoop Count",
-        data: predictedCounts,
-        fill: false,
-        borderColor: "orange",
-        borderDash: [5, 5],
-        tension: 0.4,
+        // Use segment options to style predicted portions as dashed.
+        segment: {
+          borderColor: (ctx) => {
+            if (firstPredictedIndex !== -1 && ctx.p0DataIndex >= firstPredictedIndex) {
+              return "red"; // Change color for predicted data
+            }
+            return "blue"; // Keep actual data in blue
+          },
+          borderDash: (ctx) => {
+            if (firstPredictedIndex !== -1 && ctx.p0DataIndex >= firstPredictedIndex) {
+              return [5, 5];
+            }
+            return [];
+          },
+        },
       },
     ],
   };
