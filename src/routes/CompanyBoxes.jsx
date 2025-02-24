@@ -13,16 +13,16 @@ const StagnantCompanyBox = ({ company }) => {
   // Provide default values if fields are missing
   const displayName = company.name || "Unknown Company";
   const displayAccuracy =
-    company.accuracy !== undefined ? `${company.accuracy}%` : "N/A";
+    company.accuracy !== undefined ? `${Math.floor(company.accuracy)}%` : "0";
 
   return (
-  <Link
-    to={{
-      pathname: `/projections/company/${encodeURIComponent(displayName)}`,
-      state: { company }
-    }}
-    className="company_link"
-  >
+    <Link
+      to={{
+        pathname: `/projections/company/${encodeURIComponent(displayName)}`,
+        state: { company }
+      }}
+      className="company_link"
+    >
       <div className="company_box">
         <div className="company_header">{displayName}</div>
         <div className="status_box">
@@ -50,7 +50,7 @@ const UpTrendCompanyBox = ({ company }) => {
 
   const displayName = company.name || "Unknown Company";
   const displayAccuracy =
-    company.accuracy !== undefined ? `${company.accuracy}%` : "N/A";
+    company.accuracy !== undefined ? `${Math.floor(company.accuracy)}%` : "0";
 
   return (
     <Link
@@ -84,7 +84,7 @@ const DownTrendCompanyBox = ({ company }) => {
 
   const displayName = company.name || "Unknown Company";
   const displayAccuracy =
-    company.accuracy !== undefined ? `${company.accuracy}%` : "N/A";
+    company.accuracy !== undefined ? `${Math.floor(company.accuracy)}%` : "0";
 
   return (
     <Link

@@ -1,10 +1,9 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import Papa from "papaparse";
 import "./CSS/ProjectionsPage.css";
 import "./CSS/Filter.css";
 import "../App.css";
 
-// Import our “box” components
 import {
   StagnantCompanyBox,
   UpTrendCompanyBox,
@@ -12,7 +11,7 @@ import {
 } from "./CompanyBoxes";
 
 function ProjectionsPage() {
-  // State for CSV-loaded companies data
+  // State for final “companies” array
   const [companies, setCompanies] = useState([]);
 
   // Filter states
@@ -23,49 +22,55 @@ function ProjectionsPage() {
   const [selectedSize, setSelectedSize] = useState("");     // Company Size filter
 
   useEffect(() => {
-    // Fetch the CSV from your backend route
     fetch("http://localhost:3001/api/all_companies_forecasts")
       .then((response) => response.text())
       .then((csvText) => {
-        // Parse CSV text into JSON using Papa Parse
         Papa.parse(csvText, {
           header: true,
           skipEmptyLines: true,
           complete: (results) => {
             const data = results.data;
+            console.log("Parsed CSV Data:", data);
 
-            console.log("Parsed CSV Data:", data); // Debugging parsed data
-
-            // Group rows by company_id (since the CSV may have multiple rows per company)
-            const grouped = {};
+            /**
+             * Single-pass grouping:
+             * We store each company's rows in a Map keyed by `company_id`.
+             * Then we'll do one sort per company (for date order) just once.
+             */
+            const groupedMap = new Map();
             data.forEach((row) => {
-              if (!row.company_id) return; // guard if row is malformed
-              if (!grouped[row.company_id]) {
-                grouped[row.company_id] = [];
+              if (!row.company_id) return; // skip malformed rows
+
+              const companyId = row.company_id;
+              if (!groupedMap.has(companyId)) {
+                groupedMap.set(companyId, []);
               }
-              grouped[row.company_id].push(row);
+
+              groupedMap.get(companyId).push(row);
             });
 
-            console.log("Grouped Data by Company ID:", grouped); // Debug grouped data
+            /**
+             * Now transform that grouped data into your final "companies" array.
+             * We'll sort each company's rows by date once, so the chart data is in date order.
+             * The "latest row" is simply the last item in sorted order.
+             */
+            const companiesData = [];
+            for (const [companyId, rows] of groupedMap.entries()) {
+              // Sort rows by date ascending
+              rows.sort((a, b) => new Date(a.date) - new Date(b.date));
+              const latestRow = rows[rows.length - 1] || {};
 
-            // For each company, pick the row with the most recent date to set up display
-            const companiesData = Object.keys(grouped).map((companyId) => {
-              const rows = grouped[companyId].sort(
-                (a, b) => new Date(b.date) - new Date(a.date)
-              );
-              const latestRow = rows[0];
-
-              // Determine the trend based on the alert field
+              // Decide the trend from latestRow.alert
               let trend = "stagnant";
               if (
                 latestRow.alert &&
-                latestRow.alert.trim() !== "" &&
                 latestRow.alert.toLowerCase() !== "no alert"
               ) {
                 trend = latestRow.alert.toLowerCase(); // e.g. "up", "down"
               }
 
-              return {
+              // Build the final object
+              companiesData.push({
                 id: companyId,
                 name: companyId || "Unknown Company",
                 trend: trend || "stagnant",
@@ -73,14 +78,16 @@ function ProjectionsPage() {
                 accuracy: latestRow.accuracy || "N/A",
                 size: latestRow.size || "Unknown",
                 description: latestRow.description || "No description available",
+                // Chart data
+                scoopCounts: rows.map((r) => parseFloat(r.scoop_count) || 0),
+                predictedCounts: rows.map(
+                  (r) => parseFloat(r.predicted_scoop_count) || 0
+                ),
+                dates: rows.map((r) => r.date || ""),
+              });
+            }
 
-                // Add scoop and prediction data
-                scoopCounts: rows.map(row => parseFloat(row.scoop_count) || 0),
-                predictedCounts: rows.map(row => parseFloat(row.predicted_scoop_count) || 0),
-                dates: rows.map(row => row.date || ""),
-              };
-            });
-
+            console.log("Final Companies Array:", companiesData);
             setCompanies(companiesData);
           },
         });
@@ -90,38 +97,51 @@ function ProjectionsPage() {
       });
   }, []);
 
-  // Apply filters to the companies data
-  const filteredCompanies = companies.filter((company) => {
-    const trendMatches = selectedTrend
-      ? company?.trend === selectedTrend
-      : true;
+  /**
+   * useMemo for filtering:
+   * The filtering logic only re-runs if one of these dependencies changes:
+   * companies, selectedTrend, searchName, searchCountry, searchAccuracy, selectedSize.
+   */
+  const filteredCompanies = useMemo(() => {
+    return companies.filter((company) => {
+      const trendMatches = selectedTrend
+        ? company.trend === selectedTrend
+        : true;
 
-    const nameMatches = searchName
-      ? (company?.name?.toLowerCase() ?? "").includes(searchName.toLowerCase())
-      : true;
+      const nameMatches = searchName
+        ? (company.name || "").toLowerCase().includes(searchName.toLowerCase())
+        : true;
 
-    const countryMatches = searchCountry
-      ? (company?.country?.toLowerCase() ?? "").includes(
-          searchCountry.toLowerCase()
-        )
-      : true;
+      const countryMatches = searchCountry
+        ? (company.country || "").toLowerCase().includes(
+            searchCountry.toLowerCase()
+          )
+        : true;
 
-    const accuracyMatches = searchAccuracy
-      ? (company?.accuracy?.toString() ?? "").includes(searchAccuracy)
-      : true;
+      const accuracyMatches = searchAccuracy
+        ? (company.accuracy || "").toString().includes(searchAccuracy)
+        : true;
 
-    const sizeMatches = selectedSize
-      ? company?.size === selectedSize
-      : true;
+      const sizeMatches = selectedSize
+        ? (company.size || "").toLowerCase() === selectedSize.toLowerCase()
+        : true;
 
-    return (
-      trendMatches &&
-      nameMatches &&
-      countryMatches &&
-      accuracyMatches &&
-      sizeMatches
-    );
-  });
+      return (
+        trendMatches &&
+        nameMatches &&
+        countryMatches &&
+        accuracyMatches &&
+        sizeMatches
+      );
+    });
+  }, [
+    companies,
+    selectedTrend,
+    searchName,
+    searchCountry,
+    searchAccuracy,
+    selectedSize,
+  ]);
 
   return (
     <div className="projections_content_area">
@@ -130,7 +150,6 @@ function ProjectionsPage() {
 
       {/* Filter Container */}
       <div className="filter_container">
-
         {/* Customer Name Filter */}
         <div className="filter">
           <div className="filter_header">Customer Name</div>
@@ -155,9 +174,9 @@ function ProjectionsPage() {
               className="dropdown"
             >
               <option value="">All Trends</option>
-              <option value="up">Increasing</option>
-              <option value="down">Decreasing</option>
-              <option value="stagnant">Stagnant</option>
+              <option value="increasing alert">Increasing</option>
+              <option value="decreasing alert">Decreasing</option>
+              <option value="stable">Stagnant</option>
             </select>
           </div>
         </div>
@@ -211,11 +230,11 @@ function ProjectionsPage() {
       {/* Company Area */}
       <div className="company_area">
         {filteredCompanies.map((company) => {
-          if (company?.trend === "stagnant") {
+          if (company.trend === "stable") {
             return <StagnantCompanyBox key={company.id} company={company} />;
-          } else if (company?.trend === "up") {
+          } else if (company.trend === "increasing alert") {
             return <UpTrendCompanyBox key={company.id} company={company} />;
-          } else if (company?.trend === "down") {
+          } else if (company.trend === "decreasing alert") {
             return <DownTrendCompanyBox key={company.id} company={company} />;
           } else {
             return null;
