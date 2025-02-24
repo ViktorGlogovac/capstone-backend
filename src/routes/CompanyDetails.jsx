@@ -190,19 +190,19 @@ function CompanyDetails() {
             className={`graph_filter ${selectedGraphType === "YTD" ? "active_filter" : ""}`}
             onClick={() => setSelectedGraphType("YTD")}
           >
-            <div className="filter_text">YTD</div>
+            <div className={selectedGraphType === "YTD" ? "filter_text_active" : "filter_text"}>YTD</div>
           </div>
           <div
             className={`graph_filter ${selectedGraphType === "Month" ? "active_filter" : ""}`}
             onClick={() => setSelectedGraphType("Month")}
           >
-            <div className="filter_text">Month</div>
+            <div className={selectedGraphType === "Month" ? "filter_text_active" : "filter_text"}>Month</div>
           </div>
           <div
             className={`graph_filter ${selectedGraphType === "Max" ? "active_filter" : ""}`}
             onClick={() => setSelectedGraphType("Max")}
           >
-            <div className="filter_text">Max</div>
+            <div className={selectedGraphType === "Max" ? "filter_text_active" : "filter_text"}>Max</div>
           </div>
         </div>
 

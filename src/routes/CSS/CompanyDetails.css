@@ -52,10 +52,16 @@
     background-color: #d0e4ff;
 }
 
+.filter_text_active {
+    font-weight: 500;
+    font-size: 1rem;
+    color: rgb(255, 255, 255);
+}
+
 .filter_text {
     font-weight: 500;
     font-size: 1rem;
-    color: black;
+    color: rgb(0, 0, 0);
 }
 
 /* Graph container */
