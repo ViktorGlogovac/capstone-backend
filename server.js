@@ -6,6 +6,7 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
+// Test
 // Configure AWS SDK
 AWS.config.update({ region: 'us-west-2' });
 
