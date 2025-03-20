@@ -1,42 +1,56 @@
 const express = require('express');
 const cors = require('cors');
 const AWS = require('aws-sdk');
+
 const app = express();
 
 app.use(cors());
 app.use(express.json());
 
-// Test
 // Configure AWS SDK
-AWS.config.update({ region: 'us-west-2' });
-
+AWS.config.update({ region: "us-west-2" });
 const s3 = new AWS.S3();
 
-// Route to fetch the entire CSV from S3
-app.get('/api/all_companies_forecasts', (req, res) => {
-  const params = {
-    Bucket: 'scoop-data',
-    Key: 'all_companies_forecasts.csv'
-  };
+const BUCKET_NAME = "scoop-data"; // Your S3 bucket name
 
-  const s3Stream = s3.getObject(params).createReadStream();
+// Utility function to fetch CSV from S3
+const fetchCSVFromS3 = async (fileKey) => {
+  const params = { Bucket: BUCKET_NAME, Key: fileKey };
 
-  // Set the correct headers for CSV
-  res.header('Content-Type', 'text/csv');
+  try {
+    const data = await s3.getObject(params).promise();
+    return data.Body.toString("utf-8");
+  } catch (error) {
+    console.error(`Error fetching ${fileKey} from S3:`, error);
+    throw error;
+  }
+};
 
-  // Pipe the S3 stream directly to the response
-  s3Stream.pipe(res);
+// Route to fetch all companies forecasts CSV
+app.get("/api/all_companies_forecasts", async (req, res) => {
+  try {
+    const csvData = await fetchCSVFromS3("all_companies_forecasts.csv");
+    res.header("Content-Type", "text/csv");
+    res.send(csvData);
+  } catch (error) {
+    res.status(500).json({ error: "Failed to fetch all_companies_forecasts.csv" });
+  }
+});
 
-  // Error handling
-  s3Stream.on('error', (err) => {
-    console.error('Error streaming from S3:', err);
-    res.status(500).json({ error: 'Failed to stream data from S3' });
-  });
+// Route to fetch companies metadata CSV
+app.get("/api/companies_data_1", async (req, res) => {
+  try {
+    const csvData = await fetchCSVFromS3("companies_data_1.csv");
+    res.header("Content-Type", "text/csv");
+    res.send(csvData);
+  } catch (error) {
+    res.status(500).json({ error: "Failed to fetch companies_data_1.csv" });
+  }
 });
 
 // Example route to confirm server is running
-app.get('/api/hello', (req, res) => {
-  res.json({ message: 'Hello from the backend!' });
+app.get("/api/hello", (req, res) => {
+  res.json({ message: "Hello from the backend!" });
 });
 
 // Start the server
